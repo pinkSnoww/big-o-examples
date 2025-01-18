@@ -77,4 +77,4 @@ Feel free to submit a pull request or open an issue if you have suggestions or i
 You can use these functions to understand how different algorithms perform based on their time complexity.
 
 ## Contact
-For questions or support, please reach out to [shivaq1994@gmail.com].
+For questions or support, please reach out to [pinksnow.techguru@gmail.com].
