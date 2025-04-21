@@ -1,0 +1,368 @@
+بیایید تمام بخش‌های درخواستی را کامل کنیم:
+
+### ۱. کامپوننت MemberList با استایل کامل
+
+```tsx
+// src/features/phonebook/components/MemberList.tsx
+import { Member } from '../phonebookTypes';
+
+type Props = {
+  members: Member[];
+  searchTerm: string;
+  onSearch: (term: string) => void;
+  onSelect: (member: Member) => void;
+};
+
+export const MemberList = ({ 
+  members, 
+  searchTerm, 
+  onSearch, 
+  onSelect 
+}: Props) => {
+  return (
+    <div className="member-list">
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="جستجو در اعضا..."
+          value={searchTerm}
+          onChange={(e) => onSearch(e.target.value)}
+          className="search-input"
+        />
+        <svg 
+          className="search-icon" 
+          viewBox="0 0 24 24"
+        >
+          <path d="M10 18a7.952 7.952 0 004.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0018 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"/>
+        </svg>
+      </div>
+      
+      <ul className="member-items">
+        {members.map(member => (
+          <li
+            key={member.id}
+            className="member-item"
+            onClick={() => onSelect(member)}
+          >
+            <img 
+              src={member.avatar || '/default-avatar.png'} 
+              alt={member.name}
+              className="member-avatar"
+            />
+            <div className="member-info">
+              <h3 className="member-name">{member.name}</h3>
+              <p className="member-position">{member.position}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+```
+
+### ۲. استایل‌های پیشرفته با CSS Modules
+
+```css
+/* src/features/phonebook/PhoneBook.module.css */
+
+/* استایل سرچ باکس */
+.search-container {
+  position: relative;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 1px solid #e9ecef;
+  border-radius: 25px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #4dabf7;
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.25);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: #6c757d;
+}
+
+/* استایل لیست اعضا */
+.member-list {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.member-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-item:hover {
+  background: #f8f9fa;
+}
+
+.member-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-left: 1rem;
+  object-fit: cover;
+  border: 2px solid #e9ecef;
+}
+
+.member-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.member-name {
+  margin: 0;
+  font-size: 1rem;
+  color: #212529;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member-position {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: #6c757d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+```
+
+### ۳. کامپوننت MemberDetails با استایل پیشرفته
+
+```tsx
+// src/features/phonebook/components/MemberDetails.tsx
+import { Member } from '../phonebookTypes';
+
+type Props = {
+  member: Member | null;
+};
+
+export const MemberDetails = ({ member }: Props) => {
+  if (!member) {
+    return (
+      <div className="empty-details">
+        <div className="empty-icon">👤</div>
+        <p className="empty-text">عضوی انتخاب نشده است</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="member-details">
+      <div className="detail-header">
+        <img
+          src={member.avatar || '/default-avatar.png'}
+          alt={member.name}
+          className="detail-avatar"
+        />
+        <div className="detail-titles">
+          <h1 className="detail-name">{member.name}</h1>
+          <h2 className="detail-position">{member.position}</h2>
+        </div>
+      </div>
+
+      <div className="contact-section">
+        <div className="contact-item">
+          <span className="contact-icon">📞</span>
+          <div className="contact-info">
+            <span className="contact-label">شماره تماس</span>
+            <span className="contact-value">{member.phone}</span>
+          </div>
+        </div>
+
+        <div className="contact-item">
+          <span className="contact-icon">✉️</span>
+          <div className="contact-info">
+            <span className="contact-label">ایمیل</span>
+            <span className="contact-value">{member.email}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+```
+
+### ۴. استایل MemberDetails
+
+```css
+/* استایل جزئیات عضو */
+.member-details {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.detail-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-left: 1.5rem;
+  border: 3px solid #e9ecef;
+  object-fit: cover;
+}
+
+.detail-titles {
+  flex: 1;
+}
+
+.detail-name {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #212529;
+  font-weight: 700;
+}
+
+.detail-position {
+  margin: 0.5rem 0 0;
+  font-size: 1.1rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.contact-section {
+  border-top: 1px solid #f1f3f5;
+  padding-top: 1.5rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.contact-icon {
+  font-size: 1.5rem;
+  margin-left: 1rem;
+}
+
+.contact-info {
+  flex: 1;
+}
+
+.contact-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 0.25rem;
+}
+
+.contact-value {
+  font-size: 1.1rem;
+  color: #212529;
+  font-weight: 500;
+}
+
+.empty-details {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-text {
+  color: #6c757d;
+  font-size: 1.1rem;
+  text-align: center;
+}
+```
+
+### نکات نهایی:
+1. **ریسپانسیو بودن**:
+   - استفاده از واحدهای نسبی (rem)
+   - افزودن media queries برای صفحات کوچک
+   ```css
+   @media (max-width: 768px) {
+     .phonebook-content {
+       grid-template-columns: 1fr;
+     }
+     
+     .detail-avatar {
+       width: 80px;
+       height: 80px;
+     }
+   }
+   ```
+
+2. **بهینه‌سازی تصاویر**:
+   - استفاده از lazy loading برای تصاویر
+   ```tsx
+   <img
+     loading="lazy"
+     // ...
+   />
+   ```
+
+3. **دسترسی پذیری**:
+   - افزودن label برای فیلدهای جستجو
+   ```tsx
+   <input
+     aria-label="جستجو در اعضا"
+     // ...
+   />
+   ```
+
+4. **انیمیشن‌ها**:
+   ```css
+   .member-item {
+     transition: transform 0.2s ease;
+   }
+   
+   .member-item:hover {
+     transform: translateX(5px);
+   }
+   ```
+
+این ساختار کاملاً حرفه‌ای و آماده استفاده در پروژه‌های واقعی است!
